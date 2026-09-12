@@ -2,7 +2,6 @@ package com.shopsphere.order.Entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import com.shopsphere.product.Entity.Product;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,13 +24,11 @@ public class Cart {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Constructors
     public Cart() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -57,7 +54,6 @@ public class Cart {
     }
 
     public boolean hasItem(String sku) {
-        // Simplified check: iterate items and compare productName or productId
         if (items == null || items.isEmpty()) return false;
         return items.stream().anyMatch(item -> sku.equals(item.getProductName()));
     }
