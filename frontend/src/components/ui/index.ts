@@ -9,3 +9,6 @@ export { default as Skeleton } from './Skeleton';
 export { default as SkeletonCard } from './SkeletonCard';
 export { Step } from './Step';
 export { Steps } from './Steps';
+export const Label = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <label className={className}>{children}</label>
+);
