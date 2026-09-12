@@ -1,5 +1,5 @@
 import React from 'react';
-import { AddToCart } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 
 interface ProductCardProps {
   product: {
@@ -18,20 +18,16 @@ interface ProductCardProps {
   onAddToCart?: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({
-  product,
-  onAddToCart,
-}) => {
-  const { id, name, description, price, originalPrice, sku, image, category, rating, stock } = product;
+const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
+  const { id, name, description, price, originalPrice, image, category, stock } = product;
   const discount = originalPrice ? Math.round((1 - price / originalPrice) * 100) : 0;
   const isInStock = stock > 0;
 
   return (
     <div
-      className="group bg-white rounded-lg overflow-shadow-sm hover:shadow-md transition-shadow cursor-pointer border-border"
-      onClick={() => window.location.href = `/product/${id}`}
+      className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-border"
+      onClick={() => { window.location.href = `/product/${id}`; }}
     >
-      {/* Image */}
       <div className="relative aspect-square rounded-t-lg">
         <img
           src={image}
@@ -50,18 +46,37 @@ const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </div>
 
-      {/* Details */}
       <div className="p-4 flex flex-col flex-1">
         <span className="text-xs text-muted capitalize">{category}</span>
         <h3 className="text-sm font-medium line-clamp-2">{name}</h3>
         <p className="text-xs text-muted line-clamp-2">{description}</p>
       </div>
 
-      {/* Action Footer */}
       <div className="p-4 border-t border-border flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <span className="font-medium text-foreground">
-            ${price.toFixed(2)}
-          </span>
-          {originalPrice && (
-            <s
+          <span className="font-medium text-foreground">${price.toFixed(2)}</span>
+          {originalPrice && originalPrice > price && (
+            <s className="text-xs text-muted">${originalPrice.toFixed(2)}</s>
+          )}
+        </div>
+        <button
+          type="button"
+          disabled={!isInStock}
+          onClick={(event) => {
+            event.stopPropagation();
+            onAddToCart?.();
+          }}
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <ShoppingCart className="h-4 w-4" />
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  );
+};
+
+ProductCard.displayName = 'ProductCard';
+
+export { ProductCard };
+export type { ProductCardProps };
