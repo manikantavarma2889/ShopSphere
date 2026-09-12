@@ -9,4 +9,3 @@ export { Skeleton } from './Skeleton';
 export { SkeletonCard } from './SkeletonCard';
 export { Step } from './Step';
 export { Steps } from './Steps';
-export { Toast } from './Toast';
