@@ -46,21 +46,13 @@ jobs:
             maven-${{ runner.os }}-
 
       - name: Build with Maven
-        working-directory: shopsphere
-        run: |
-          mvn clean verify -DskipTests
+        run: mvn clean verify -DskipTests
 
       - name: Run Maven Tests
-        working-directory: shopsphere
-        run: |
-          mvn test
+        run: mvn test
 
       - name: Package
-        working-directory: shopsphere
-        run: |
-          mvn package
+        run: mvn package
 
       - name: Verify
-        working-directory: shopsphere
-        run: |
-          mvn verify
+        run: mvn verify
