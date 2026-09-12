@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Navbar } from '../components/navigation/Navbar';
-import { Card, Separator, Input, Label } from '@/components/ui';
+import { Separator, Input, Label } from '@/components/ui';
 import { Search } from 'lucide-react';
 import { ProductCard } from '../components/products/ProductCard';
 
@@ -47,43 +47,14 @@ export const ProductListPage = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-white rounded-lg shadow-sm border-border p-6 mb-8">
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-              <div>
-                <Input placeholder="Search products..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full" suffixIcon={<Search />} />
-              </div>
-              <div>
-                <Label className="sr-only">Category</Label>
-                <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="block w-full rounded-lg border-border px-3 py-2 text-sm font-medium text-foreground shadow-sm focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                  <option value="All">All Categories</option>
-                  {categories.map((category) => <option key={category.name} value={category.name}>{category.name} ({category.count})</option>)}
-                </select>
-              </div>
-              <div>
-                <Label className="sr-only">Sort</Label>
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'price-low' | 'price-high' | 'name')} className="block w-full rounded-lg border-border px-3 py-2 text-sm font-medium text-foreground shadow-sm focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="name">Name: A-Z</option>
-                </select>
-              </div>
+              <div><Input placeholder="Search products..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full" suffixIcon={<Search />} /></div>
+              <div><Label className="sr-only">Category</Label><select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="block w-full rounded-lg border-border px-3 py-2 text-sm font-medium text-foreground shadow-sm focus:ring-2 focus:ring-primary focus:ring-offset-2"><option value="All">All Categories</option>{categories.map((category) => <option key={category.name} value={category.name}>{category.name} ({category.count})</option>)}</select></div>
+              <div><Label className="sr-only">Sort</Label><select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'price-low' | 'price-high' | 'name')} className="block w-full rounded-lg border-border px-3 py-2 text-sm font-medium text-foreground shadow-sm focus:ring-2 focus:ring-primary focus:ring-offset-2"><option value="price-low">Price: Low to High</option><option value="price-high">Price: High to Low</option><option value="name">Name: A-Z</option></select></div>
               <div><p className="text-sm text-muted">{filteredProducts.length} of {allProducts.length} products</p></div>
             </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => <ProductCard key={product.id} product={product} onAddToCart={() => {}} />)}
-          </div>
-
-          {filteredProducts.length > 8 && (
-            <>
-              <Separator />
-              <div className="mt-8 flex justify-center"><nav aria-label="Product pagination"><div className="flex gap-2">
-                <button className="px-4 py-2 border rounded hover:bg-primary/10 transition-colors">Previous</button>
-                <button className="px-4 py-2 border rounded hover:bg-primary/10 transition-colors">1</button>
-                <button className="px-4 py-2 border rounded bg-primary text-primary-foreground">2</button>
-                <button className="px-4 py-2 border rounded hover:bg-primary/10 transition-colors">Next</button>
-              </div></nav></div>
-            </>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} onAddToCart={() => {}} />)}</div>
+          {filteredProducts.length > 8 && <><Separator /><div className="mt-8 flex justify-center"><nav aria-label="Product pagination"><div className="flex gap-2"><button className="px-4 py-2 border rounded hover:bg-primary/10 transition-colors">Previous</button><button className="px-4 py-2 border rounded hover:bg-primary/10 transition-colors">1</button><button className="px-4 py-2 border rounded bg-primary text-primary-foreground">2</button><button className="px-4 py-2 border rounded hover:bg-primary/10 transition-colors">Next</button></div></nav></div></>}
         </div>
       </main>
     </div>
