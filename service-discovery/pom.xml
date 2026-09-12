@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.shopsphere</groupId>
-        <artifactId>shopsphere-parent</artifactId>
-        <version>1.0.0</version>
-        <relativePath>../shopsphere/pom.xml</relativePath>
-    </parent>
+    <groupId>com.shopsphere</groupId>
+    <artifactId>shopsphere-parent</artifactId>
+    <version>1.0.0</version>
+    <relativePath>../pom.xml</relativePath>
+</parent>
 
     <artifactId>service-discovery</artifactId>
     <name>ShopSphere Service Discovery</name>
