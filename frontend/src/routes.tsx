@@ -1,3 +1,4 @@
+import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ProductListPage from './pages/ProductListPage';
 import ProductDetailPage from './pages/ProductDetailPage';
@@ -12,7 +13,7 @@ import AdminOrdersPage from './pages/admin/AdminOrdersPage';
 import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
 
-export default function Routes() {
+export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
