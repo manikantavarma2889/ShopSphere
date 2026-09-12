@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
 interface User {
   id: number;
@@ -36,11 +36,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const login = async (email: string, password: string) => {
-    // Mock login - in real app would call auth service API
+  const login = async (email: string, _password: string) => {
     setUser({
       id: 1,
-      email: email,
+      email,
       firstName: 'Test',
       lastName: 'User',
       role: 'CUSTOMER',
@@ -62,7 +61,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     email: string;
     password: string;
   }) => {
-    // Mock registration
     setUser({
       id: 2,
       email: userData.email,
@@ -74,7 +72,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('shopSphereToken', 'mock-jwt-token');
   };
 
-  // Check for existing token on mount
   useEffect(() => {
     const token = localStorage.getItem('shopSphereToken');
     if (token) {

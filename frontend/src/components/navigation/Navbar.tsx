@@ -1,124 +1,99 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  ShoppingCart,
-  User,
-  LogOut,
-  Menu,
-  Search,
-  Box,
-} from 'lucide-react';
+import { Menu, ShoppingCart } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 interface NavItem {
   label: string;
   href: string;
-  showForAdmin?: boolean;
 }
 
-const NavItems: NavItem[] = [
+const navItems: NavItem[] = [
   { label: 'Products', href: '/products' },
-  { label: 'Categories', href: '/categories' },
-];
-
-const MobileNavItems: NavItem[] = [
-  { label: 'Products', href: '/products' },
-  { label: 'Cart', href: '/cart' },
-  { label: 'Profile', href: '/profile' },
+  { label: 'Categories', href: '/products' },
 ];
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useWindowSize();
+  const isMobile = useWindowSize();
+  const { user } = useAuth();
 
-  const handleMenuOpen = () => setIsMenuOpen(!isMenuOpen);
-  const handleCloseMenu = () => setIsMenuOpen(false);
+  useEffect(() => {
+    if (!isMobile) {
+      setIsMenuOpen(false);
+    }
+  }, [isMobile]);
 
   return (
-    <nav className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <Link to="/" className="text-xl font-bold text-primary">
-            ShopSphere
-          </Link>
-        </div>
+    <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        <Link to="/" className="text-xl font-bold text-primary">
+          ShopSphere
+        </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {NavItems.map((item, index) => (
+        <div className="hidden items-center gap-8 md:flex">
+          {navItems.map((item) => (
             <Link
-              key={index}
+              key={item.label}
               to={item.href}
-              className="text-sm text-foreground hover:text-primary transition-colors"
+              className="text-sm text-foreground transition-colors hover:text-primary"
             >
               {item.label}
             </Link>
           ))}
 
-          <Link to="/cart" className="relative">
+          <Link to="/cart" className="relative flex items-center gap-2 text-sm">
+            <ShoppingCart className="h-4 w-4" />
             Cart
-            <span className="absolute -top-1 -right-1 bg-primary text-xs text-primary-foreground rounded-full w-3 h-3 flex items-center justify-center">
-              {isMobile ? 0 : 3}
-            </span>
+          </Link>
+
+          <Link to="/profile" className="text-sm text-foreground hover:text-primary">
+            Profile
           </Link>
 
           {user?.role === 'ADMIN' && (
-            <Link to="/admin/dashboard" className="text-sm text-foreground hover:text-primary transition-colors">
+            <Link to="/admin" className="text-sm text-foreground hover:text-primary">
               Admin Dashboard
             </Link>
           )}
         </div>
 
-        {/* Mobile Menu Button */}
         <button
-          onClick={handleMenuOpen}
-          className="md:hidden p-2"
+          type="button"
+          onClick={() => setIsMenuOpen((open) => !open)}
+          className="p-2 md:hidden"
           aria-label="Open menu"
         >
           <Menu className="h-6 w-6" />
         </button>
-
-        {/* Mobile Cart Count */}
-        <button className="md:hidden p-2">
-          <ShoppingCart className="h-6 w-6" />
-          <span className="absolute -top-1 -right-1 bg-primary text-xs text-primary-foreground rounded-full w-3 h-3 flex items-center justify-center">
-            3
-          </span>
-        </button>
       </div>
 
-      {/* Mobile Menu */}
       {isMobile && isMenuOpen && (
-        <div className="fixed inset-0 bg-background/90 z-40 flex flex-col items-center justify-center pt-20 gap-8">
-          <Link to="/products" className="text-2xl font-bold hover:text-primary transition-colors">
-            Products
-          </Link>
-          <Link to="/cart" className="text-2xl font-bold hover:text-primary transition-colors">
-            Cart
-          </Link>
-          {user?.role === 'ADMIN' && (
-            <Link to="/admin/dashboard" className="text-2xl font-bold hover:text-primary transition-colors">
-              Admin
-            </Link>
-          )}
-          <button onClick={handleCloseMenu} className="text-2xl font-bold hover:text-destructive transition-colors">
-            Close
-          </button>
+        <div className="border-t border-border bg-background p-6 md:hidden">
+          <div className="flex flex-col gap-4">
+            <Link to="/products" onClick={() => setIsMenuOpen(false)}>Products</Link>
+            <Link to="/cart" onClick={() => setIsMenuOpen(false)}>Cart</Link>
+            <Link to="/profile" onClick={() => setIsMenuOpen(false)}>Profile</Link>
+            {user?.role === 'ADMIN' && (
+              <Link to="/admin" onClick={() => setIsMenuOpen(false)}>Admin</Link>
+            )}
+          </div>
         </div>
       )}
     </nav>
   );
 };
 
-// Helper hook to detect window size
 function useWindowSize() {
-  const [width, setWidth] = useState(window.innerWidth);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  );
 
   useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  return width < 768;
+  return isMobile;
 }
