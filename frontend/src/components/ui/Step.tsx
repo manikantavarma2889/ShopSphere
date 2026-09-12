@@ -1,16 +1,13 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 
 interface StepProps {
   step: number;
   total: number;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const Step: React.FC<StepProps> = ({ step, total, className, children }) => {
-  const isCompleted = step <= total;
-  const isCurrent = step === total + 1;
-
+const Step = ({ className, children }: StepProps) => {
   return (
     <div className={`flex items-center justify-between ${className || ''}`}>
       {children}
