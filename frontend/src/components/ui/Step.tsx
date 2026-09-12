@@ -12,10 +12,9 @@ const Step: React.FC<StepProps> = ({ step, total, className, children }) => {
   const isCurrent = step === total + 1;
 
   return (
-    <div className={`flex items-center justify-between ${
-      className || ''
-    }`}
-    {...children.props}
+    <div className={`flex items-center justify-between ${className || ''}`}>
+      {children}
+    </div>
   );
 };
 
