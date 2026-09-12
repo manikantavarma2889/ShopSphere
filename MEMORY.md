@@ -1,0 +1,7 @@
+- [Architecture Overview](docs/architecture.md) — Project overview, service responsibilities, technology stack, database design
+- [Database Design](docs/database.md) — Schema structure, entity relationships, Flyway migrations, Supabase configuration
+- [Microservices Architecture](docs/microservices.md) — Why microservices, service responsibilities, Eureka discovery, inter-service communication
+- [API Documentation](docs/api.md) — All endpoints, request/response DTOs, pagination, search, filtering, error formats
+- [Deployment Guide](docs/deployment.md) — Local development, Docker, production deployment, CI/CD pipelines
+- [Security Guide](docs/security.md) — Authentication, authorization, input validation, CORS, security headers, compliance
+- [README.md] — Project overview, features, architecture, technology stack, local setup, environment variables, Docker, CI/CD, deployment

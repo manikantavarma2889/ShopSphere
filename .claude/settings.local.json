@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd /c \"dir /B service-discovery\\\\NUL 2>&1\")",
+      "Bash(cmd /c \"dir /X service-discovery/ 2>&1\")",
+      "Bash(cmd /c \"git status 2>&1\")",
+      "Bash(cmd /c \"dir service-discovery\\\\* 2>&1\")",
+      "Bash(cmd /c \"dir service-discovery /A 2>&1\")",
+      "Bash(cmd /c \"cd d:\\\\Claude-Anti\\\\ShopSphere && git add . 2>&1\")",
+      "Bash(cmd /c \"cd d:\\\\Claude-Anti\\\\ShopSphere && git commit -m \\\\\"Initial commit: ShopSphere e-commerce microservices portfolio project with 6 microservices, Eureka Server, Spring Cloud Gateway, JWT auth, React/TypeScript/Vite frontend, Docker Compose, and comprehensive documentation\\\\\" 2>&1\")",
+      "Bash(cmd /c \"cd d:\\\\Claude-Anti\\\\ShopSphere && git remote add origin https://github.com/manikantavarma2889/ShopSphere.git 2>&1\")",
+      "Bash(cmd /c \"cd d:\\\\Claude-Anti\\\\ShopSphere && git log --oneline 2>&1\")",
+      "Bash(cmd /c \"cd d:\\\\Claude-Anti\\\\ShopSphere && dir 2>&1 | head -30\")",
+      "Bash(cmd /c \"cd d:\\\\Claude-Anti\\\\ShopSphere && ls -la 2>&1\")"
+    ]
+  }
+}

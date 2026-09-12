@@ -1,0 +1,71 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopsphere
+    username: shopsphere
+    password: secret
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: order_schema
+
+  flyway:
+    enabled: true
+    schemas: order_schema
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show: always
+
+logging:
+  level:
+    root: INFO
+    com.shopsphere: INFO
+    org.hibernate.SQL: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopsphere_dev
+    username: shopsphere
+    password: secret
+
+flyway:
+  enabled: true
+  schemas: order_schema_dev
+  baseline-on-migrate: true
