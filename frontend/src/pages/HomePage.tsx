@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState } from 'react';
 import { Navbar } from '../components/navigation/Navbar';
 import { Card } from '@/components/ui';
@@ -47,15 +46,12 @@ export const HomePage = () => {
               </div>
             </div>
           </section>
-
           <section className="mb-12">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {categories.map((category) => (
                 <button key={category.name} onClick={() => setSelectedCategory(category.name)} className="text-left">
                   <Card className="p-4 text-center hover:bg-primary/5 transition-colors">
-                    <div className="w-10 h-10 mx-auto mb-4 flex items-center justify-center">
-                      <Search className="h-5 w-5 text-primary" />
-                    </div>
+                    <div className="w-10 h-10 mx-auto mb-4 flex items-center justify-center"><Search className="h-5 w-5 text-primary" /></div>
                     <h3 className="text-sm font-medium">{category.name}</h3>
                     <p className="text-xs text-muted">{category.count} items</p>
                   </Card>
@@ -63,16 +59,12 @@ export const HomePage = () => {
               ))}
             </div>
           </section>
-
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-6">Featured Products</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.slice(0, 6).map((product) => (
-                <ProductCard key={product.id} product={product} onAddToCart={() => {}} />
-              ))}
+              {filteredProducts.slice(0, 6).map((product) => <ProductCard key={product.id} product={product} onAddToCart={() => {}} />)}
             </div>
           </section>
-
           <section className="mt-12 pt-8 border-t border-border">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center"><p className="text-3xl font-bold text-primary">10K+</p><p className="text-sm text-muted">Happy Customers</p></div>
