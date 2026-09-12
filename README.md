@@ -302,13 +302,6 @@ Full OpenAPI/Swagger documentation available at:
 - `http://localhost:8081/swagger-ui.html` (Auth Service)
 - etc.
 
-## Screenshots
-
-![ShopSphere Homepage](docs/screenshots/homepage.png)
-![ShopSphere Product Listing](docs/screenshots/products.png)
-![ShopSphere Cart](docs/screenshots/cart.png)
-![ShopSphere Admin Dashboard](docs/screenshots/admin-dashboard.png)
-
 ## Architecture Diagrams
 
 ```mermaid
@@ -468,11 +461,4 @@ erDiagram
 - Architecture diagrams
 - API docs
 
-### Phase 15: Final Quality Review
-- All quality gates passed
-- Resume bullet points
-- Interview preparation
 
-## License
-
-This project is for portfolio and demonstration purposes.
