@@ -7,10 +7,9 @@ interface StepProps {
 
 const Steps: React.FC<StepProps> = ({ className, children }) => {
   return (
-    <div className={`flex items-center justify-between mb-4 ${
-      className || ''
-    }`}
-    {...children.props}
+    <div className={`flex items-center justify-between mb-4 ${className || ''}`}>
+      {children}
+    </div>
   );
 };
 
