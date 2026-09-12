@@ -7,22 +7,25 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   prefixIcon?: React.ReactNode;
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>({
-  type = 'text',
-  placeholder,
-  suffixIcon,
-  prefixIcon,
-  ...props
-}) {
-  return (
-    <input
-      type={type}
-      placeholder={placeholder}
-      className="w-full rounded-lg border-border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
-      {...props}
-    />
-  );
-});
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({
+    type = 'text',
+    placeholder,
+    suffixIcon,
+    prefixIcon,
+    ...props
+  }, ref) => {
+    return (
+      <input
+        ref={ref}
+        type={type}
+        placeholder={placeholder}
+        className="w-full rounded-lg border-border px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+        {...props}
+      />
+    );
+  }
+);
 
 Input.displayName = 'Input';
 
