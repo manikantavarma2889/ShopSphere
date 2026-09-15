@@ -12,7 +12,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     variant = 'primary',
     size = 'md',
     asChild = false,
-    type = 'button',
     ...props
   }, ref) => {
     const variants = {
@@ -42,9 +41,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        type={type}
         className={baseClassName}
-        data-as-child={asChild || undefined}
+        data-as-child={asChild ? 'true' : undefined}
         {...props}
       />
     );
