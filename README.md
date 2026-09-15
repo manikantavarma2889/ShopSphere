@@ -1,8 +1,8 @@
 # ShopSphere — Full-Stack E-Commerce Microservices Platform
 
-ShopSphere is a production-style e-commerce platform built to demonstrate **Java 21/Spring Boot microservices**, **React/TypeScript frontend engineering**, REST APIs, PostgreSQL, JWT security, Docker, and CI/CD.
+ShopSphere is a production-style e-commerce platform built with **Java 21/Spring Boot microservices**, **React/TypeScript**, REST APIs, PostgreSQL, JWT security, Docker, and CI/CD.
 
-The project is also engineered with a strong focus on **accessible frontend interaction**, including keyboard navigation, semantic landmarks, route focus management, accessible navigation state, reduced motion, visible focus, high-contrast support, and form accessibility.
+The frontend has also been updated with accessibility-focused improvements for keyboard navigation, semantic landmarks, focus management, navigation state, visible focus, reduced motion, high-contrast support, and form validation state.
 
 ## 🚀 Features
 
@@ -33,29 +33,27 @@ The project is also engineered with a strong focus on **accessible frontend inte
 
 ---
 
-## ♿ Accessibility Engineering
+## ♿ Accessibility Improvements
 
-ShopSphere's frontend includes accessibility engineering aligned with **WCAG 2.2 principles** and common **WAI-ARIA** patterns.
+The frontend was updated with the following accessibility improvements:
 
-### Implemented
+- Added a semantic `nav` landmark with an accessible navigation label
+- Added a **Skip to main content** link
+- Added a semantic `main` landmark with a stable `main-content` target
+- Added automatic focus movement to the main content after route changes
+- Added `aria-current="page"` to identify the current navigation page
+- Added accessible labels to the ShopSphere home link and icon-only mobile controls
+- Added `aria-expanded` and `aria-controls` to the mobile navigation menu button
+- Added automatic mobile-menu closure after route changes
+- Added consistent `:focus-visible` indicators
+- Added `aria-invalid` support to the shared `Input` component
+- Preserved existing form-submit behavior in the shared `Button` component while improving its focus and disabled states
+- Added `prefers-reduced-motion` support
+- Added forced-colors/high-contrast focus support
+- Added minimum touch-target sizing for small-screen buttons and links
+- Added an `.sr-only` utility for visually hidden accessible content
 
-- Semantic `nav` and `main` landmarks
-- Skip-to-main-content navigation
-- Automatic focus movement to the main region after route changes
-- Native keyboard-operable links and buttons
-- `aria-current="page"` for current navigation state
-- Mobile navigation state with `aria-expanded` and `aria-controls`
-- Accessible names for icon-only controls
-- Decorative icon suppression with `aria-hidden`
-- Consistent `:focus-visible` indicators
-- `aria-invalid` support in the shared Input component
-- Disabled-state styling and interaction handling
-- `prefers-reduced-motion` support
-- Forced-colors/high-contrast support
-- Responsive touch target sizing on small screens
-- Zoom/reflow-oriented responsive layouts
-
-Detailed accessibility engineering and verification scenarios are documented in [`ACCESSIBILITY.md`](./ACCESSIBILITY.md).
+Detailed accessibility engineering notes and verification scenarios are documented in [`ACCESSIBILITY.md`](./ACCESSIBILITY.md).
 
 ---
 
@@ -231,28 +229,27 @@ The frontend is available at `http://localhost:5173` and the API Gateway at `htt
 GitHub Actions provides separate backend and frontend validation pipelines:
 
 - Backend: Maven compilation, tests and verification
-- Frontend: dependency installation, TypeScript build, linting and production build
-
-The frontend can be deployed to Vercel and backend services can be deployed independently as Docker services.
+- Frontend: dependency installation, TypeScript checking, linting and production build
 
 ---
 
 ## 🧪 Accessibility Verification
 
-The repository includes verification scenarios for:
+`ACCESSIBILITY.md` contains verification scenarios for the accessibility changes, including:
 
-- Keyboard-only navigation
+- Keyboard navigation
 - Skip navigation
 - Route focus management
-- Accessible navigation state
-- Icon-only control names
+- Visible focus indicators
+- Current navigation state
+- Mobile menu state
+- Icon-only control labels
 - Form validation state
-- Screen-reader review
-- 200%/400% zoom and reflow
 - Reduced-motion behavior
 - High-contrast/forced-colors behavior
+- Responsive interaction and touch targets
 
-See [`ACCESSIBILITY.md`](./ACCESSIBILITY.md) for the detailed checklist and test scenarios.
+The documented manual screen-reader, zoom/reflow, and other browser-based scenarios are provided for verification; they are not represented as completed manual tests unless actually performed.
 
 ---
 
