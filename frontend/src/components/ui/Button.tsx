@@ -12,6 +12,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     variant = 'primary',
     size = 'md',
     asChild = false,
+    type = 'button',
     ...props
   }, ref) => {
     const variants = {
@@ -33,13 +34,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       transition-colors
       ${variants[variant]}
       ${sizes[size]}
+      focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-blue-600
+      disabled:opacity-50 disabled:pointer-events-none
       ${className || ''}
     `;
 
-    return asChild ? (
-      <button ref={ref} {...props} className={baseClassName} />
-    ) : (
-      <button ref={ref} className={baseClassName} {...props} />
+    return (
+      <button
+        ref={ref}
+        type={type}
+        className={baseClassName}
+        data-as-child={asChild || undefined}
+        {...props}
+      />
     );
   }
 );
