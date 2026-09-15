@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/navigation/Navbar';
 import { HomePage } from './pages/HomePage';
 import { ProductListPage } from './pages/ProductListPage';
@@ -12,11 +13,26 @@ import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminProductsPage } from './pages/admin/AdminProductsPage';
 import { AdminOrdersPage } from './pages/admin/AdminOrdersPage';
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const main = document.getElementById('main-content');
+    if (main) {
+      main.focus({ preventScroll: true });
+    }
+  }, [location.pathname]);
+
   return (
-    <BrowserRouter>
+    <>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <Navbar />
-      <main className="min-h-screen bg-background p-4">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        aria-label="Main content"
+        className="min-h-screen bg-background p-4 focus:outline-none"
+      >
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductListPage />} />
@@ -31,6 +47,14 @@ function App() {
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
         </Routes>
       </main>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
