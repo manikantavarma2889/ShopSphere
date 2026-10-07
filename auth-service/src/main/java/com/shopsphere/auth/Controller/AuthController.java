@@ -3,12 +3,12 @@ package com.shopsphere.auth.Controller;
 import com.shopsphere.auth.Entity.User;
 import com.shopsphere.auth.Entity.User.Role;
 import com.shopsphere.auth.Service.AuthService;
-import io.jsonwebtoken.Jwt;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,7 +40,6 @@ public class AuthController {
         try {
             User user = authService.login(email, password);
             String token = authService.generateToken(user);
-            // Set token in HTTP-only cookie
             String jwtCookie = "Authorization=Bearer " + token + "; Path=/; HttpOnly; SameSite=Strict; Max-Age=" + (24 * 60 * 60);
             response.setHeader("Set-Cookie", jwtCookie);
 
@@ -53,41 +52,33 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            String token = bearerToken.substring(7);
-            User user = authService.getUserFromToken(token);
-            if (user != null) {
-                return ResponseEntity.ok()
-                        .body("{\"id\": " + user.getId() +
-                                ", \"firstName\": \"" + user.getFirstName() + "\"" +
-                                ", \"lastName\": \"" + user.getLastName() + "\"" +
-                                ", \"email\": \"" + user.getEmail() + "\"" +
-                                ", \"role\": \"" + user.getRole() + "\"}");
-            }
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("{\"error\": \"Invalid or missing token\"}");
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+        User user = authService.getUserByEmail(authentication.getName());
+        return ResponseEntity.ok()
+                .body("{\"id\": " + user.getId() +
+                        ", \"firstName\": \"" + user.getFirstName() + "\"" +
+                        ", \"lastName\": \"" + user.getLastName() + "\"" +
+                        ", \"email\": \"" + user.getEmail() + "\"" +
+                        ", \"role\": \"" + user.getRole() + "\"}");
     }
 
     @PutMapping("/profile")
     public ResponseEntity<?> updateProfile(@RequestParam Long userId,
-                                          @RequestParam(required = false) String firstName,
-                                          @RequestParam(required = false) String lastName,
-                                          @RequestParam(required = false) String email,
-                                          HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("{\"error\": \"Missing authorization header\"}");
-        }
-
-        String token = bearerToken.substring(7);
+                                           @RequestParam(required = false) String firstName,
+                                           @RequestParam(required = false) String lastName,
+                                           @RequestParam(required = false) String email,
+                                           Authentication authentication) {
         try {
+            User currentUser = authService.getUserByEmail(authentication.getName());
+
+            if (!currentUser.getId().equals(userId) && currentUser.getRole() != Role.ADMIN) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("{\"error\": \"You can only update your own profile\"}");
+            }
+
             User user = authService.updateProfile(userId, firstName, lastName, email);
             return ResponseEntity.ok()
-                    .body("{\"message\": \"Profile updated successfully\"}");
+                    .body("{\"message\": \"Profile updated successfully\", \"email\": \"" + user.getEmail() + "\"}");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body("{\"error\": \"" + e.getMessage() + "\"}");
@@ -96,8 +87,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        // Clear the JWT cookie
-        String clearCookie = "Authorization=Bearer; Path=/; HttpOnly; SameSite=Strict; Max-Age=0";
+        String clearCookie = "Authorization=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0";
         response.setHeader("Set-Cookie", clearCookie);
 
         return ResponseEntity.ok()
