@@ -3,6 +3,7 @@ package com.shopsphere.auth.Service;
 import com.shopsphere.auth.Entity.User;
 import com.shopsphere.auth.Entity.User.Role;
 import com.shopsphere.auth.Repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -12,11 +13,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import io.jsonwebtoken.Claims;
+
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -24,6 +24,9 @@ public class AuthService {
 
     @Value("${jwt.secret}")
     private String secret;
+
+    @Value("${jwt.expiration:86400000}")
+    private long jwtExpirationMillis;
 
     private Key signingKey;
 
@@ -37,7 +40,7 @@ public class AuthService {
 
     @PostConstruct
     public void init() {
-        this.signingKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     @Transactional
@@ -68,7 +71,7 @@ public class AuthService {
 
     public String generateToken(User user) {
         Date now = new Date();
-        Date expiry = new Date(System.currentTimeMillis() + jwtExpiration());
+        Date expiry = new Date(System.currentTimeMillis() + jwtExpirationMillis);
 
         return Jwts.builder()
                 .setSubject(user.getEmail())
@@ -92,8 +95,12 @@ public class AuthService {
 
     public User getUserFromToken(String token) {
         String email = extractEmail(token);
+        return getUserByEmail(email);
+    }
+
+    public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
     public String extractEmail(String token) {
@@ -114,37 +121,36 @@ public class AuthService {
                 .getBody();
     }
 
-    private long jwtExpiration() {
-        return Long.parseLong(java.util.Optional.ofNullable(secret)
-                .orElse("86400000")
-                .replace("ms", ""));
-    }
-
     @Transactional
     public User updateProfile(Long userId, String firstName, String lastName, String email) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (user.getEmail() != null && !user.getEmail().equals(email) &&
-                userRepository.findByEmail(email).isPresent()) {
+        if (email != null && !email.equals(user.getEmail()) && userRepository.findByEmail(email).isPresent()) {
             throw new IllegalArgumentException("Email already in use: " + email);
         }
 
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
+        if (firstName != null && !firstName.isBlank()) {
+            user.setFirstName(firstName);
+        }
+        if (lastName != null && !lastName.isBlank()) {
+            user.setLastName(lastName);
+        }
+        if (email != null && !email.isBlank()) {
+            user.setEmail(email);
+        }
+
         user.setUpdatedAt(java.time.LocalDateTime.now());
         return userRepository.save(user);
     }
 
     public void logout(HttpServletRequest request) {
-        // In a stateless JWT system, logout is handled client-side
-        // by removing the token from local storage
+        // In a stateless JWT system, logout is handled client-side by removing the token.
     }
 
     public boolean isTokenValid(String token, User user) {
         final String email = extractEmail(token);
-        return (email.equals(user.getEmail())) && !isTokenExpired(token);
+        return email.equals(user.getEmail()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
