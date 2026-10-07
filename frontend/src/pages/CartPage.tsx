@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
 import { Separator } from "@/components/ui";
 import { cartApi, type Cart } from "../services/api";
 
