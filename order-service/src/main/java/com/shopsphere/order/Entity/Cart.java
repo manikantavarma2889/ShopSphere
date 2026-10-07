@@ -34,5 +34,8 @@ public class Cart {
     public BigDecimal getSubtotal() { return items == null ? BigDecimal.ZERO : items.stream().map(CartItem::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add); }
     public boolean isEmpty() { return items == null || items.isEmpty(); }
 
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
     @Override public String toString() { return "Cart{id=" + id + ", userId=" + userId + ", itemCount=" + getItemCount() + ", subtotal=" + getSubtotal() + '}'; }
 }
