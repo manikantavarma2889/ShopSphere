@@ -5,12 +5,12 @@ import { dirname, resolve } from 'path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src'),
+  resolve: { alias: { '@': resolve(__dirname, 'src') } },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:8080',
     },
   },
 })
