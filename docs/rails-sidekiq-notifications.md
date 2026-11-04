@@ -1,35 +1,31 @@
 # Ruby on Rails + Sidekiq order notifications
 
-ShopSphere now has a Ruby notification service alongside its Java/Spring Boot services.
+A dedicated Ruby on Rails API accepts order-confirmation events from the Java order service and enqueues them for Sidekiq workers backed by Redis.
 
 ## Event flow
 
-1. The order service publishes an order-confirmation message to RabbitMQ after the database transaction commits.
-2. The Java RabbitMQ listener forwards the event to the authenticated Rails endpoint at `POST /internal/order-confirmations`.
-3. Rails validates the service token and required fields, then enqueues `OrderConfirmationJob`.
-4. Sidekiq fetches the job from Redis and processes it asynchronously.
+1. Spring Boot publishes the order event to RabbitMQ after the order transaction commits.
+2. The Java RabbitMQ listener forwards the event to Rails at POST /internal/order-confirmations.
+3. Rails validates the shared service token and enqueues OrderConfirmationJob.
+4. Sidekiq executes the job asynchronously using Redis.
 
-RabbitMQ remains the durable handoff from the order service. Sidekiq + Redis handles the Rails application's background execution.
+RabbitMQ is the durable handoff from the order service; Sidekiq + Redis run background work in the Rails service.
 
 ## Run locally
 
-From the repository root:
+From the repository root, set NOTIFICATION_SERVICE_TOKEN to a strong local secret, then run:
 
-```bash
-docker compose up --build
-```
+    docker compose up --build
 
-Rails health endpoint: `http://localhost:3000/health`.
-
-Sidekiq and Rails share the same notification-service image and Redis connection. Redis is available internally to the Compose network on port 6379.
+Rails health endpoint: http://localhost:3000/health.
 
 ## Configuration
 
-- `NOTIFICATION_SERVICE_TOKEN`: shared secret used by the Java worker and Rails API. Set a strong value outside local development.
-- `REDIS_URL`: Redis connection used by Sidekiq.
-- `NOTIFICATION_SERVICE_URL`: Rails API base URL used by the Java worker.
-- `SECRET_KEY_BASE`: Rails secret; override the local development fallback for deployed environments.
+- NOTIFICATION_SERVICE_TOKEN: shared secret between the Java worker and Rails API.
+- NOTIFICATION_SERVICE_URL: Rails API base URL used by the Java worker.
+- REDIS_URL: Redis connection used by Sidekiq.
+- SECRET_KEY_BASE: Rails secret; override the development fallback for deployed environments.
 
-## Current scope and production follow-ups
+## Current scope
 
-The Sidekiq job logs a structured order-confirmation event. It does not send an actual email until an email provider and credentials are configured. The service token is a simple service-to-service authentication mechanism; production deployments should use secret management, TLS, token rotation, request limits, and monitoring. RabbitMQ redelivery and Sidekiq retries are at-least-once, so real notification delivery should be made idempotent. The existing RabbitMQ publisher also still needs a transactional outbox/publisher-confirm strategy for stronger delivery guarantees.
+The job logs a structured order-confirmation event. It does not send an email until an email provider and credentials are configured. Production follow-ups include secret management, TLS, token rotation, request limits, monitoring, idempotency, and stronger RabbitMQ publisher/outbox delivery guarantees.
