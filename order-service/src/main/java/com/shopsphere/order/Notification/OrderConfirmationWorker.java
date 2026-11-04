@@ -1,24 +1,34 @@
 package com.shopsphere.order.Notification;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
 
 @Component
 public class OrderConfirmationWorker {
-    private static final Logger log = LoggerFactory.getLogger(OrderConfirmationWorker.class);
+    private final RestClient restClient;
+    private final String notificationServiceUrl;
+    private final String notificationServiceToken;
+
+    public OrderConfirmationWorker(
+            RestClient.Builder restClientBuilder,
+            @Value("${shopsphere.notifications.service-url}") String notificationServiceUrl,
+            @Value("${shopsphere.notifications.service-token}") String notificationServiceToken) {
+        this.restClient = restClientBuilder.build();
+        this.notificationServiceUrl = notificationServiceUrl;
+        this.notificationServiceToken = notificationServiceToken;
+    }
 
     @RabbitListener(queues = "${shopsphere.notifications.order-confirmation-queue}")
     public void process(OrderConfirmationJob job) {
-        // This worker demonstrates asynchronous processing. Connect an email provider
-        // here when delivery credentials and a provider are configured.
-        log.info(
-                "Processed order confirmation job: orderId={}, userId={}, totalAmount={}, createdAt={}",
-                job.orderId(),
-                job.userId(),
-                job.totalAmount(),
-                job.createdAt()
-        );
+        restClient.post()
+                .uri(notificationServiceUrl + "/internal/order-confirmations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + notificationServiceToken)
+                .body(job)
+                .retrieve()
+                .toBodilessEntity();
     }
 }
