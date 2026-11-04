@@ -497,6 +497,4 @@ The project demonstrates the end-to-end architecture, but the following producti
 
 ---
 
-## Project purpose
 
-ShopSphere is a portfolio software engineering project demonstrating full-stack application development, Spring Boot microservices, REST API design, authentication and authorization, relational data modeling, asynchronous messaging, background job processing across Java and Ruby services, containerized development, CI workflows, and accessibility-conscious frontend engineering.
