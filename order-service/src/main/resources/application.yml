@@ -28,6 +28,18 @@ spring:
     baseline-on-migrate: true
     baseline-version: 0
     validate-on-migrate: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    connection-timeout: 5s
+
+shopsphere:
+  notifications:
+    exchange: shopsphere.notifications
+    routing-key: order.confirmation
+    order-confirmation-queue: shopsphere.order-confirmation
 
 eureka:
   client:
