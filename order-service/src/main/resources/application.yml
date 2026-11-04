@@ -40,6 +40,8 @@ shopsphere:
     exchange: shopsphere.notifications
     routing-key: order.confirmation
     order-confirmation-queue: shopsphere.order-confirmation
+    service-url: ${NOTIFICATION_SERVICE_URL:http://localhost:3000}
+    service-token: ${NOTIFICATION_SERVICE_TOKEN:local-shopsphere-notification-token}
 
 eureka:
   client:

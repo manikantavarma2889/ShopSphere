@@ -12,6 +12,50 @@ services:
       retries: 5
     restart: unless-stopped
 
+  redis:
+    image: redis:7-alpine
+    container_name: shopsphere-notification-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  notification-service:
+    build: ./notification-service
+    container_name: shopsphere-notification-service
+    command: ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      RAILS_ENV: production
+      REDIS_URL: redis://redis:6379/0
+      NOTIFICATION_SERVICE_TOKEN: ${NOTIFICATION_SERVICE_TOKEN:-local-shopsphere-notification-token}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-local-only-secret-key-change-before-production}
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  notification-worker:
+    build: ./notification-service
+    container_name: shopsphere-sidekiq-worker
+    command: ["bundle", "exec", "sidekiq", "-r", "./config/environment.rb", "-q", "order_notifications"]
+    depends_on:
+      redis:
+        condition: service_healthy
+      notification-service:
+        condition: service_started
+    environment:
+      RAILS_ENV: production
+      REDIS_URL: redis://redis:6379/0
+      NOTIFICATION_SERVICE_TOKEN: ${NOTIFICATION_SERVICE_TOKEN:-local-shopsphere-notification-token}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-local-only-secret-key-change-before-production}
+    restart: unless-stopped
+
   eureka-server:
     build: ./service-discovery
     container_name: service-discovery
@@ -70,6 +114,7 @@ services:
       - postgres
       - eureka-server
       - rabbitmq
+      - notification-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/shopsphere
       SPRING_DATASOURCE_USERNAME: shopsphere
@@ -79,6 +124,8 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USERNAME: guest
       RABBITMQ_PASSWORD: guest
+      NOTIFICATION_SERVICE_URL: http://notification-service:3000
+      NOTIFICATION_SERVICE_TOKEN: ${NOTIFICATION_SERVICE_TOKEN:-local-shopsphere-notification-token}
     ports:
       - "8083:8083"
     restart: unless-stopped
