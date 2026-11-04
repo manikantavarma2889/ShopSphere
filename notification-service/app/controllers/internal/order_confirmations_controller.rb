@@ -5,7 +5,9 @@ module Internal
       provided_token = request.headers["Authorization"].to_s
       expected_header = "Bearer #{expected_token}"
 
-      unless ActiveSupport::SecurityUtils.secure_compare(provided_token, expected_header)
+      authorized = provided_token.bytesize == expected_header.bytesize &&
+                   ActiveSupport::SecurityUtils.secure_compare(provided_token, expected_header)
+      unless authorized
         return render json: { error: "unauthorized" }, status: :unauthorized
       end
 
