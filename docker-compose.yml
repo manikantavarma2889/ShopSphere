@@ -1,4 +1,17 @@
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: shopsphere-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   eureka-server:
     build: ./service-discovery
     container_name: service-discovery
@@ -56,11 +69,16 @@ services:
     depends_on:
       - postgres
       - eureka-server
+      - rabbitmq
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/shopsphere
       SPRING_DATASOURCE_USERNAME: shopsphere
       SPRING_DATASOURCE_PASSWORD: secret
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
     ports:
       - "8083:8083"
     restart: unless-stopped

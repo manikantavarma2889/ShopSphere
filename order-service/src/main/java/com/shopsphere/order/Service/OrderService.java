@@ -8,11 +8,14 @@ import com.shopsphere.order.Entity.Cart;
 import com.shopsphere.order.Entity.CartItem;
 import com.shopsphere.order.Entity.Order;
 import com.shopsphere.order.Entity.OrderItem;
+import com.shopsphere.order.Notification.OrderConfirmationJob;
 import com.shopsphere.order.Repository.CartRepository;
 import com.shopsphere.order.Repository.OrderRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -20,11 +23,17 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final ProductClient productClient;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public OrderService(CartRepository cartRepository, OrderRepository orderRepository, ProductClient productClient) {
+    public OrderService(
+            CartRepository cartRepository,
+            OrderRepository orderRepository,
+            ProductClient productClient,
+            ApplicationEventPublisher eventPublisher) {
         this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
         this.productClient = productClient;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -118,6 +127,13 @@ public class OrderService {
 
         order.recalculateTotal();
         Order saved = orderRepository.save(order);
+
+        eventPublisher.publishEvent(new OrderConfirmationJob(
+                saved.getId(),
+                saved.getUserId(),
+                saved.getTotalAmount(),
+                Instant.now()
+        ));
 
         cart.getItems().clear();
         cart.setUpdatedAt(java.time.LocalDateTime.now());
