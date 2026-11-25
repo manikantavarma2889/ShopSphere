@@ -1,13 +1,3 @@
-# ShopSphere — Full-Stack E-Commerce Platform
-
-ShopSphere is a full-stack e-commerce application built around a **Java/Spring Boot microservices backend** and a **React + TypeScript frontend**. It brings together product discovery, cart and checkout workflows, demo payments, role-based administration, and asynchronous order-confirmation processing.
-
-The project is also an engineering exercise in distributed systems: service discovery, API gateway routing, service-owned database schemas, event-driven messaging with RabbitMQ, and a separate Ruby on Rails + Sidekiq notification service backed by Redis.
-
-> **Project scope:** Payment processing is a demo/simulation. The notification pipeline currently enqueues and processes/logs order-confirmation jobs; it does not deliver real email or SMS.
-
-### Technologies used
-
 ![Java 21](https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![Spring Cloud](https://img.shields.io/badge/Spring_Cloud-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
@@ -28,6 +18,14 @@ The project is also an engineering exercise in distributed systems: service disc
 ![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
 ![JUnit 5](https://img.shields.io/badge/JUnit_5-25A162?style=for-the-badge&logo=junit5&logoColor=white)
 ![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)
+
+# ShopSphere — Full-Stack E-Commerce Platform
+
+ShopSphere is a full-stack e-commerce application built around a **Java/Spring Boot microservices backend** and a **React + TypeScript frontend**. It brings together product discovery, cart and checkout workflows, demo payments, role-based administration, and asynchronous order-confirmation processing.
+
+The project is also an engineering exercise in distributed systems: service discovery, API gateway routing, service-owned database schemas, event-driven messaging with RabbitMQ, and a separate Ruby on Rails + Sidekiq notification service backed by Redis.
+
+> **Project scope:** Payment processing is a demo/simulation. The notification pipeline currently enqueues and processes/logs order-confirmation jobs; it does not deliver real email or SMS.
 
 
 ---
